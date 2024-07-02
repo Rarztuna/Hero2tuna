@@ -1,0 +1,42 @@
+// ==UserScript==
+// @name         testherocon
+// @namespace    https://github.com/Rarztuna
+// @version      0.1.0
+// @description  Insert image into the content on Tunaground
+// @author       Daleth
+// @match        https://bbs.tunaground.net/*
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=tunaground.net
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    const imageUrl = 'https://bbs.tunaground.net/upload/image/1719890299938-8953833-%EC%B2%A0%EC%9D%B4%EC%BD%982-1.png';
+
+    function addImageButton() {
+        const button = document.createElement('button');
+        button.textContent = '이미지 삽입';
+        button.style.marginTop = '10px';
+        button.addEventListener('click', () => insertImage(imageUrl));
+
+        const textarea = document.querySelector('textarea[name="content"]');
+        textarea?.closest('.post_form').appendChild(button);
+    }
+
+    function insertImage(url) {
+        const textarea = document.querySelector('textarea[name="content"]');
+        if (textarea) {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const text = textarea.value;
+            const imageMarkdown = `![image](${url})`;
+            textarea.value = text.slice(0, start) + imageMarkdown + text.slice(end);
+            textarea.selectionStart = textarea.selectionEnd = start + imageMarkdown.length;
+            textarea.focus();
+        }
+    }
+
+    // Call the function to add the image button on page load
+    document.addEventListener('DOMContentLoaded', addImageButton);
+})();
